@@ -46,6 +46,7 @@ function M.install_hooks()
 	local old_credits_key = "credible_settings.old_credits"
 	local counter_key = "credible_settings.counter"
 	local winner_key = "credible_settings.negotiation_winner"
+	local won = false
 
 	---@type OnWorldInitialized
 	local _OnWorldInitialized = OnWorldInitialized or function() end
@@ -67,11 +68,32 @@ function M.install_hooks()
 		GlobalsSetValue(counter_key, tostring(counter))
 	end
 
+	local gui
+	local internal_frame = 0
+	local paused = false
+	local _OnPausePreUpdate = OnPausePreUpdate or function() end
+	OnPausePreUpdate = function()
+		if not won then return end
+		_OnPausePreUpdate()
+		gui = gui or GuiCreate()
+		internal_frame = internal_frame + 1
+		GuiStartFrame(gui)
+
+		GuiText(gui, 0, 0, "hi")
+	end
+	local _OnPausedChanged = OnPausedChanged or function() end
+	OnPausedChanged = function(is_paused, is_inventory_pause)
+		if not won then return end
+		_OnPausedChanged(is_paused, is_inventory_pause)
+		paused = is_paused
+	end
+
 	local first_time = true
 	---@type OnWorldPreUpdate
 	local _OnWorldPreUpdate = OnWorldPreUpdate or function() end
 	OnWorldPreUpdate = function()
 		_OnWorldPreUpdate()
+		if not paused and gui then GuiStartFrame(gui) end
 		if not first_time then return end
 		-- world updates before it exists ??
 		if GlobalsGetValue(counter_key, "") == "" then return end
@@ -85,6 +107,7 @@ function M.install_hooks()
 			return
 		end
 		GlobalsSetValue(winner_key, whoami)
+		won = true
 	end
 end
 
