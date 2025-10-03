@@ -72,12 +72,18 @@ function M.install_hooks()
 	local gui
 	local internal_frame = 0
 	local paused = false
+	local _id = 2
+	local function id()
+		_id = _id + 1
+		return _id
+	end
 	local _OnPausePreUpdate = OnPausePreUpdate or function() end
 	OnPausePreUpdate = function()
 		if not won then return end
 		_OnPausePreUpdate()
 		gui = gui or GuiCreate()
 		internal_frame = internal_frame + 1
+		_id = 2
 		GuiStartFrame(gui)
 
 		GuiText(gui, 0, 0, "hi")
