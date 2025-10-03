@@ -1,4 +1,3 @@
-local button = require "src.button"
 ---@class credible_settings
 local M = {}
 
@@ -16,6 +15,8 @@ local _require = require
 function require(modname)
 	return dofile_once(get_path_name(modname:gsub("%.", "/")) .. ".lua")
 end
+
+local button = require "src.button"
 
 local credible_settings_version = 1
 
