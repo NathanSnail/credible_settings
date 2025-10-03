@@ -6,7 +6,8 @@ local M = {}
 ---@param id fun(): integer
 function M.draw_button(gui, id)
 	GuiOptionsAddForNextWidget(gui, gui_options.Align_HorizontalCenter)
-	GuiText(gui, 0, 100, "Credible Settings")
+	local w, _ = GuiGetScreenDimensions(gui)
+	GuiText(gui, w / 2, 100, "Credible Settings")
 end
 
 return M
