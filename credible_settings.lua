@@ -1,3 +1,4 @@
+local button = require "src.button"
 ---@class credible_settings
 local M = {}
 
@@ -86,7 +87,7 @@ function M.install_hooks()
 		_id = 2
 		GuiStartFrame(gui)
 
-		GuiText(gui, 0, 0, "hi")
+		button.draw_button(gui, id)
 	end
 	local _OnPausedChanged = OnPausedChanged or function() end
 	OnPausedChanged = function(is_paused, is_inventory_pause)
