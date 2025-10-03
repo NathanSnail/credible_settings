@@ -42,7 +42,6 @@ function M.install_hooks()
 	OnWorldInitialized = function()
 		_OnWorldInitialized()
 
-		print(old_credits:byte(1, 20))
 		if old_credits ~= blank then GlobalsSetValue(old_credits_key, old_credits) end
 
 		local version = tonumber(GlobalsGetValue(version_key, "0")) or 0
@@ -68,7 +67,6 @@ function M.install_hooks()
 		if GlobalsGetValue(counter_key, "") == "" then return end
 		first_time = false
 
-		print("hi")
 		-- the first mod with the highest version wins
 		if
 			tostring(my_counter) ~= GlobalsGetValue(counter_key, "")
