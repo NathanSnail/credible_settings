@@ -1,6 +1,8 @@
 {
     "diagnostics.globals": [
         "OnMagicNumbersAndWorldSeedInitialized",
-        "OnModPostInit"
+        "OnModPostInit",
+        "OnWorldInitialized",
+        "OnWorldPreUpdate"
     ]
 }

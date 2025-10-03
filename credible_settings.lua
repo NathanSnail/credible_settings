@@ -24,16 +24,26 @@ function M.add_menu(name, source)
 	table.insert(menus, { name = name, source = source })
 end
 
+local credits_path = "data/credits.txt"
+local old_credits = ModTextFileGetContent(credits_path)
+local blank = ("\n"):rep(100)
+ModTextFileSetContent(credits_path, blank)
+
 ---Run after `OnMagicNumbersAndWorldSeedInitialized` is declared
 function M.install_hooks()
 	local my_counter
 	local version_key = "credible_settings.version"
+	local old_credits_key = "credible_settings.old_credits"
 	local counter_key = "credible_settings.counter"
+	local winner_key = "credible_settings.negotiation_winner"
 
 	---@type OnWorldInitialized
-	local _OnModPostInit = OnModPostInit
-	OnModPostInit = function()
-		_OnModPostInit()
+	local _OnWorldInitialized = OnWorldInitialized or function() end
+	OnWorldInitialized = function()
+		_OnWorldInitialized()
+
+		print(old_credits:byte(1, 20))
+		if old_credits ~= blank then GlobalsSetValue(old_credits_key, old_credits) end
 
 		local version = tonumber(GlobalsGetValue(version_key, "0")) or 0
 		if version < credible_settings_version then
@@ -48,16 +58,25 @@ function M.install_hooks()
 		GlobalsSetValue(counter_key, tostring(counter))
 	end
 
-	local _OnMagicNumbersAndWorldSeedInitialized = OnMagicNumbersAndWorldSeedInitialized
-	OnMagicNumbersAndWorldSeedInitialized = function()
-		_OnMagicNumbersAndWorldSeedInitialized()
+	local first_time = true
+	---@type OnWorldPreUpdate
+	local _OnWorldPreUpdate = OnWorldPreUpdate
+	OnWorldPreUpdate = function()
+		_OnWorldPreUpdate()
+		if not first_time then return end
+		-- world updates before it exists ??
+		if GlobalsGetValue(counter_key, "") == "" then return end
+		first_time = false
 
+		print("hi")
 		-- the first mod with the highest version wins
-		if tostring(my_counter) ~= GlobalsGetValue(counter_key, "") then return end
-
-		local credits_path = "data/credits.txt"
-		local old_credits = ModTextFileGetContent(credits_path)
-		ModTextFileSetContent(credits_path, ("\n"):rep(100))
+		if
+			tostring(my_counter) ~= GlobalsGetValue(counter_key, "")
+			and whoami ~= GlobalsGetValue(winner_key, "")
+		then
+			return
+		end
+		GlobalsSetValue(winner_key, whoami)
 	end
 end
 
