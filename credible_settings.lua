@@ -33,6 +33,7 @@ ModTextFileSetContent(credits_path, blank)
 local first = old_credits ~= blank
 
 if first then
+	ModMagicNumbersFileAdd(get_path_name("src/magic_numbers.xml"))
 	local translations = ModTextFileGetContent("data/translations/common.csv")
 	translations = translations .. ModTextFileGetContent(get_path_name("src/translations.csv"))
 	translations = translations:gsub("\r", ""):gsub("\n\n+", "\n")
