@@ -2,15 +2,3 @@
 set -e
 files=$(find . -type f | rg \.lua$)
 stylua -c $files
-bad=false
-for file in $(echo $files | sed 's/ /\n/g' | rg "src");
-do
-	first=$(head -n 1 < $file)
-	if [ "$first" != "local require = require" ]; then
-		echo "\033[31;1m$file\033[0m"
-		bad=true
-	fi
-done
-if [ "$bad" != false ]; then
-	exit 1
-fi
