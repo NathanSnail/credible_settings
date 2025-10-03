@@ -5,13 +5,15 @@ local path = "data/credible_settings/temp.txt"
 ModTextFileSetContent(path, "empty")
 local whoami = ModTextFileWhoSetContent(path)
 
+local function get_path_name(modname)
+	return ("mods/%s/lib/credible_settings/%s"):format(whoami, modname)
+end
+
 local _require = require
 ---@param modname string
 ---@return any
 function require(modname)
-	return dofile_once(
-		("mods/%s/lib/credible_settings/%s.lua"):format(whoami, modname:gsub("%.", "/"))
-	)
+	return dofile_once(get_path_name(modname:gsub("%.", "/")) .. ".lua")
 end
 
 local credible_settings_version = 1
@@ -28,6 +30,14 @@ local credits_path = "data/credits.txt"
 local old_credits = ModTextFileGetContent(credits_path)
 local blank = ("\n"):rep(100)
 ModTextFileSetContent(credits_path, blank)
+local first = old_credits ~= blank
+
+if first then
+	local translations = ModTextFileGetContent("data/translations/common.csv")
+	translations = translations .. ModTextFileGetContent(get_path_name("src/translations.csv"))
+	translations = translations:gsub("\r", ""):gsub("\n\n+", "\n")
+	ModTextFileSetContent("data/translations/common.csv", translations)
+end
 
 ---Run after `OnMagicNumbersAndWorldSeedInitialized` is declared
 function M.install_hooks()
@@ -42,7 +52,7 @@ function M.install_hooks()
 	OnWorldInitialized = function()
 		_OnWorldInitialized()
 
-		if old_credits ~= blank then GlobalsSetValue(old_credits_key, old_credits) end
+		if first then GlobalsSetValue(old_credits_key, old_credits) end
 
 		local version = tonumber(GlobalsGetValue(version_key, "0")) or 0
 		if version < credible_settings_version then
@@ -59,7 +69,7 @@ function M.install_hooks()
 
 	local first_time = true
 	---@type OnWorldPreUpdate
-	local _OnWorldPreUpdate = OnWorldPreUpdate
+	local _OnWorldPreUpdate = OnWorldPreUpdate or function() end
 	OnWorldPreUpdate = function()
 		_OnWorldPreUpdate()
 		if not first_time then return end
