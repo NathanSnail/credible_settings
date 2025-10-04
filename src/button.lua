@@ -93,7 +93,7 @@ end
 function M.return_button(gui, id)
 	local w, h = GuiGetScreenDimensions(gui)
 	local x, y = w * 0.04, h * 0.93
-	GuiButton(gui, x, y, "Return", id())
+	GuiButton(gui, x, y, GameTextGetTranslatedOrNot("$menu_return"), id())
 end
 
 return M
