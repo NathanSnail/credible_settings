@@ -75,6 +75,7 @@ function M.install_hooks()
 	local internal_frame = 0
 	local paused = false
 	local _id = 2
+	local menu_open = false
 	local function id()
 		_id = _id + 1
 		return _id
@@ -88,7 +89,7 @@ function M.install_hooks()
 		_id = 2
 		GuiStartFrame(gui)
 
-		button.draw_button(gui, id)
+		if not menu_open then menu_open = button.draw_button(gui, id, true, internal_frame) end
 	end
 	local _OnPausedChanged = OnPausedChanged or function() end
 	OnPausedChanged = function(is_paused, is_inventory_pause)
