@@ -89,7 +89,11 @@ function M.install_hooks()
 		_id = 2
 		GuiStartFrame(gui)
 
-		if not menu_open then menu_open = button.draw_button(gui, id, true, internal_frame) end
+		if menu_open then
+			button.return_button(gui, id)
+		else
+			menu_open = button.draw_button(gui, id, true, internal_frame)
+		end
 	end
 	local _OnPausedChanged = OnPausedChanged or function() end
 	OnPausedChanged = function(is_paused, is_inventory_pause)

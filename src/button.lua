@@ -5,6 +5,7 @@ local M = {}
 
 local hovered_last = false
 local menu_open = false
+local last_frame_clicked = 0
 
 local function hue_to_interval(deg)
 	return (deg / 360) % 1
@@ -16,7 +17,6 @@ end
 ---@param msg string
 ---@param x number
 ---@param y number
----@return boolean menu_open
 local function draw_rainbow(gui, id, internal_frame, msg, x, y)
 	local shift = x
 	local wiggles = 0
@@ -51,9 +51,14 @@ local function draw_rainbow(gui, id, internal_frame, msg, x, y)
 	local clicked, _, hovered = GuiGetPreviousWidgetInfo(gui)
 	GuiOptionsClear(gui)
 	hovered_last = hovered
-	if clicked then menu_open = not menu_open end
+	print(tostring(clicked))
 
-	return menu_open
+	-- TODO: find a proper solution
+	-- for some reason the first time you click it triggers multiple times
+	if last_frame_clicked < internal_frame - 2 then
+		menu_open = menu_open ~= clicked
+		last_frame_clicked = internal_frame
+	end
 end
 
 ---@param gui gui
@@ -79,6 +84,16 @@ function M.draw_button(gui, id, rainbow, internal_frame)
 		menu_open = menu_open ~= clicked -- no builtin xor :(
 	end
 	return menu_open
+end
+
+function M.close()
+	menu_open = false
+end
+
+function M.return_button(gui, id)
+	local w, h = GuiGetScreenDimensions(gui)
+	local x, y = w * 0.04, h * 0.93
+	GuiButton(gui, x, y, "Return", id())
 end
 
 return M
