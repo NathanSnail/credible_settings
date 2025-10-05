@@ -56,7 +56,8 @@ function M.install_hooks()
 	OnWorldInitialized = function()
 		_OnWorldInitialized()
 
-		if first then GlobalsSetValue(old_credits_key, old_credits) end
+		-- globals dont sanitise " right
+		if first then GlobalsSetValue(old_credits_key, old_credits:gsub('"', "\001")) end
 
 		local version = tonumber(GlobalsGetValue(version_key, "0")) or 0
 		if version < credible_settings_version then
