@@ -51,7 +51,6 @@ local function draw_rainbow(gui, id, internal_frame, msg, x, y)
 	local clicked, _, hovered = GuiGetPreviousWidgetInfo(gui)
 	GuiOptionsClear(gui)
 	hovered_last = hovered
-	print(tostring(clicked))
 
 	-- TODO: find a proper solution
 	-- for some reason the first time you click it triggers multiple times
