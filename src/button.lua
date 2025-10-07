@@ -17,6 +17,7 @@ end
 ---@param msg string
 ---@param x number
 ---@param y number
+---@return boolean clicked
 local function draw_rainbow(gui, id, internal_frame, msg, x, y)
 	local shift = x
 	local wiggles = 0
@@ -54,10 +55,7 @@ local function draw_rainbow(gui, id, internal_frame, msg, x, y)
 
 	-- TODO: find a proper solution
 	-- for some reason the first time you click it triggers multiple times
-	if last_frame_clicked < internal_frame - 2 then
-		menu_open = menu_open ~= clicked
-		last_frame_clicked = internal_frame
-	end
+	return clicked
 end
 
 ---@param gui gui
@@ -72,16 +70,17 @@ function M.draw_button(gui, id, rainbow, internal_frame)
 
 	local text = "Credible Settings"
 
+	local clicked
 	if rainbow then
 		GuiZSet(gui, -100000)
 		local text_w = GuiGetTextDimensions(gui, text)
-		draw_rainbow(gui, id, internal_frame, text, w / 2 - text_w / 2, y)
+		clicked = draw_rainbow(gui, id, internal_frame, text, w / 2 - text_w / 2, y)
 	else
 		GuiColorSetForNextWidget(gui, 0, 0, 0, 0)
 		GuiOptionsAddForNextWidget(gui, gui_options.Align_HorizontalCenter)
-		local clicked = GuiButton(gui, id(), w / 2, y, text)
-		menu_open = menu_open ~= clicked -- no builtin xor :(
+		clicked = GuiButton(gui, id(), w / 2, y, text)
 	end
+	if clicked then menu_open = true end
 	return menu_open
 end
 
@@ -92,7 +91,8 @@ end
 function M.return_button(gui, id)
 	local w, h = GuiGetScreenDimensions(gui)
 	local x, y = w * 0.04, h * 0.93
-	GuiButton(gui, x, y, GameTextGetTranslatedOrNot("$menu_return"), id())
+	local clicked = GuiButton(gui, x, y, GameTextGetTranslatedOrNot("$menu_return"), id())
+	if clicked then menu_open = false end
 end
 
 return M
