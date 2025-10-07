@@ -1,4 +1,4 @@
-local gui_options = require "src.gui_options"
+local gui_options = require "lib.noita_enums.gui_options"
 local vivid = require "lib.vivid.vivid"
 ---@class credible_settings.button
 local M = {}

@@ -1,3 +1,6 @@
 [submodule "lib/vivid"]
 	path = lib/vivid
 	url = https://github.com/WetDesertRock/vivid.git
+[submodule "lib/noita_enums"]
+	path = lib/noita_enums
+	url = https://github.com/NathanSnail/noita_enums.git
