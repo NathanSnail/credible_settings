@@ -4,7 +4,6 @@ local vivid = require "lib.vivid.vivid"
 local M = {}
 
 local hovered_last = false
-local menu_open = false
 local last_frame_clicked = 0
 
 local function hue_to_interval(deg)
@@ -62,7 +61,7 @@ end
 ---@param id fun(): integer
 ---@param rainbow boolean
 ---@param internal_frame integer
----@return boolean menu_open
+---@return boolean clicked
 function M.draw_button(gui, id, rainbow, internal_frame)
 	local w, _ = GuiGetScreenDimensions(gui)
 	-- 293 is correct for english default config.xml w kbm
@@ -80,19 +79,17 @@ function M.draw_button(gui, id, rainbow, internal_frame)
 		GuiOptionsAddForNextWidget(gui, gui_options.Align_HorizontalCenter)
 		clicked = GuiButton(gui, id(), w / 2, y, text)
 	end
-	if clicked then menu_open = true end
-	return menu_open
+	return clicked
 end
 
-function M.close()
-	menu_open = false
-end
-
+---@param gui gui
+---@param id fun(): integer
+---@return boolean clicked
 function M.return_button(gui, id)
 	local w, h = GuiGetScreenDimensions(gui)
 	local x, y = w * 0.04, h * 0.93
 	local clicked = GuiButton(gui, x, y, GameTextGetTranslatedOrNot("$menu_return"), id())
-	if clicked then menu_open = false end
+	return clicked
 end
 
 return M

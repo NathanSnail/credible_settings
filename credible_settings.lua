@@ -91,7 +91,7 @@ function M.install_hooks()
 		GuiStartFrame(gui)
 
 		if menu_open then
-			button.return_button(gui, id)
+			menu_open = not button.return_button(gui, id)
 		else
 			menu_open = button.draw_button(gui, id, true, internal_frame)
 		end
