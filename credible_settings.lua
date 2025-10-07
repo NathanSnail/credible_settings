@@ -17,6 +17,7 @@ function require(modname)
 end
 
 local button = require "src.button"
+local keycodes = require "lib.noita_enums.keyboard"
 
 local credible_settings_version = 1
 
@@ -90,6 +91,7 @@ function M.install_hooks()
 		_id = 2
 		GuiStartFrame(gui)
 
+		if InputIsKeyJustDown(keycodes.Key_ESCAPE) then menu_open = false end
 		if menu_open then
 			menu_open = not button.return_button(gui, id)
 		else
@@ -101,6 +103,11 @@ function M.install_hooks()
 		if not won then return end
 		_OnPausedChanged(is_paused, is_inventory_pause)
 		paused = is_paused
+		-- we should make sure that we close the menu if state got desynced, otherwise things will be bad
+		if not is_paused then
+			menu_open = false
+			GuiStartFrame(gui)
+		end
 	end
 
 	local first_time = true
