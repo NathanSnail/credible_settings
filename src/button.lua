@@ -34,7 +34,7 @@ local function draw_rainbow(gui, id, internal_frame, msg, x, y)
 		shift = shift + width
 	end
 
-	local box_x, box_y, box_w, box_h = x, y - wiggles, shift, tallest_char + 2 * wiggles
+	local box_x, box_y, box_w, box_h = x, y - wiggles, shift - x, tallest_char + 2 * wiggles
 	GuiOptionsAdd(gui, gui_options.AlwaysClickable)
 	GuiOptionsAdd(gui, gui_options.ForceFocusable)
 	GuiImageNinePiece(
