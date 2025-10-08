@@ -35,8 +35,7 @@ local function draw_rainbow(gui, id, internal_frame, msg, x, y)
 	end
 
 	local box_x, box_y, box_w, box_h = x, y - wiggles, shift - x, tallest_char + 2 * wiggles
-	GuiOptionsAdd(gui, gui_options.AlwaysClickable)
-	GuiOptionsAdd(gui, gui_options.ForceFocusable)
+	GuiOptionsAddForNextWidget(gui, gui_options.NoSound)
 	GuiImageNinePiece(
 		gui,
 		id(),
@@ -49,7 +48,6 @@ local function draw_rainbow(gui, id, internal_frame, msg, x, y)
 		"data/debug/empty.png"
 	)
 	local clicked, _, hovered = GuiGetPreviousWidgetInfo(gui)
-	GuiOptionsClear(gui)
 	hovered_last = hovered
 
 	-- TODO: find a proper solution
@@ -108,12 +106,13 @@ function M.draw_button(gui, id, rainbow, internal_frame)
 		GuiZSet(gui, -100000)
 		local text_w = GuiGetTextDimensions(gui, credits_text)
 		clicked = draw_rainbow(gui, id, internal_frame, credits_text, w / 2 - text_w / 2, credits_y)
-		if clicked then print("clicked") end
-		print(tostring(clicked))
 	else
-		GuiColorSetForNextWidget(gui, 0, 0, 0, 0)
 		GuiOptionsAddForNextWidget(gui, gui_options.Align_HorizontalCenter)
+		GuiOptionsAddForNextWidget(gui, gui_options.NoSound)
+		GuiAnimateBegin(gui)
+		GuiAnimateAlphaFadeIn(gui, id(), 0, 0, false)
 		clicked = GuiButton(gui, id(), w / 2, credits_y, credits_text)
+		GuiAnimateEnd(gui)
 	end
 	return clicked, false
 end
