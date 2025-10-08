@@ -78,10 +78,12 @@ function M.install_hooks()
 	local paused = false
 	local _id = 2
 	local menu_open = false
+	local in_other_gui = false
 	local function id()
 		_id = _id + 1
 		return _id
 	end
+
 	local _OnPausePreUpdate = OnPausePreUpdate or function() end
 	OnPausePreUpdate = function()
 		if not won then return end
@@ -91,11 +93,20 @@ function M.install_hooks()
 		_id = 2
 		GuiStartFrame(gui)
 
-		if InputIsKeyJustDown(keycodes.Key_ESCAPE) then menu_open = false end
+		if InputIsKeyJustDown(keycodes.Key_ESCAPE) then
+			menu_open = false
+			in_other_gui = false
+		end
+
+		if in_other_gui then return end
+
 		if menu_open then
 			menu_open = not button.return_button(gui, id)
 		else
 			menu_open = button.draw_button(gui, id, true, internal_frame)
+			if not menu_open and InputIsMouseButtonJustUp(keycodes.Mouse_left) then
+				in_other_gui = true
+			end
 		end
 	end
 	local _OnPausedChanged = OnPausedChanged or function() end
@@ -106,6 +117,7 @@ function M.install_hooks()
 		-- we should make sure that we close the menu if state got desynced, otherwise things will be bad
 		if not is_paused then
 			menu_open = false
+			in_other_gui = false
 			GuiStartFrame(gui)
 		end
 	end
