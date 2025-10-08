@@ -61,25 +61,54 @@ end
 ---@param id fun(): integer
 ---@param rainbow boolean
 ---@param internal_frame integer
----@return boolean clicked
+---@return boolean clicked, boolean entered_other_ui
 function M.draw_button(gui, id, rainbow, internal_frame)
-	local w, _ = GuiGetScreenDimensions(gui)
+	local w, h = GuiGetScreenDimensions(gui)
 	-- 293 is correct for english default config.xml w kbm
-	local y = tonumber(GlobalsGetValue("credible_settings.button_y", "293")) or 0
+	local y = 0.01
+		* (tonumber(MagicNumbersGetValue("UI_PAUSE_MENU_LAYOUT_TOP_EDGE_PERCENTAGE")) or 0)
+		* h
+	local _, img_h = GuiGetImageDimensions(gui, "data/ui_gfx/pause_menu/help_keyboardmouse.png")
+	y = y + img_h + (tonumber(GlobalsGetValue("credible_settings.button_y", "0")) or 0)
+	local texts = {
+		"paused",
+		"continue",
+		"newgame",
+		"progress",
+		"options",
+		"mods",
+		"releasenotes",
+		"credits",
+		"saveandquit",
+	}
 
-	local text = "Credible Settings"
+	local credits_y, credits_text
+	for _, v in ipairs(texts) do
+		local text = GameTextGetTranslatedOrNot("$menu_" .. v)
+		local _, txt_h = GuiGetTextDimensions(gui, text)
+		GuiOptionsAddForNextWidget(gui, gui_options.Align_HorizontalCenter)
+		GuiOptionsAddForNextWidget(gui, gui_options.NoSound)
+		GuiColorSetForNextWidget(gui, 0, 0, 0, 0)
+		local clicked = GuiButton(gui, id(), w / 2, y, text)
+		if clicked and v ~= "credits" and v ~= "paused" then return false, true end
+		if v == "credits" then
+			credits_y = y
+			credits_text = text
+		end
+		y = y + txt_h
+	end
 
 	local clicked
 	if rainbow then
 		GuiZSet(gui, -100000)
-		local text_w = GuiGetTextDimensions(gui, text)
-		clicked = draw_rainbow(gui, id, internal_frame, text, w / 2 - text_w / 2, y)
+		local text_w = GuiGetTextDimensions(gui, credits_text)
+		clicked = draw_rainbow(gui, id, internal_frame, credits_text, w / 2 - text_w / 2, credits_y)
 	else
 		GuiColorSetForNextWidget(gui, 0, 0, 0, 0)
 		GuiOptionsAddForNextWidget(gui, gui_options.Align_HorizontalCenter)
-		clicked = GuiButton(gui, id(), w / 2, y, text)
+		clicked = GuiButton(gui, id(), w / 2, credits_y, credits_text)
 	end
-	return clicked
+	return clicked, false
 end
 
 ---@param gui gui
