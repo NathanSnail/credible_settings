@@ -88,8 +88,11 @@ function M.draw_button(gui, id, rainbow, internal_frame)
 		local _, txt_h = GuiGetTextDimensions(gui, text)
 		GuiOptionsAddForNextWidget(gui, gui_options.Align_HorizontalCenter)
 		GuiOptionsAddForNextWidget(gui, gui_options.NoSound)
-		GuiColorSetForNextWidget(gui, 0, 0, 0, 0)
+		GuiAnimateBegin(gui)
+		GuiAnimateAlphaFadeIn(gui, id(), 0, 0, false)
+		-- TODO: for some reason widget colour doesn't work, make it work
 		local clicked = GuiButton(gui, id(), w / 2, y, text)
+		GuiAnimateBegin(gui)
 		if clicked and v ~= "credits" and v ~= "paused" then return false, true end
 		if v == "credits" then
 			credits_y = y
