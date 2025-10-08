@@ -85,19 +85,21 @@ function M.draw_button(gui, id, rainbow, internal_frame)
 	local credits_y, credits_text
 	for _, v in ipairs(texts) do
 		local text = GameTextGetTranslatedOrNot("$menu_" .. v)
+		if v == "credits" then
+			credits_y = y
+			credits_text = text
+		end
 		local _, txt_h = GuiGetTextDimensions(gui, text)
 		GuiOptionsAddForNextWidget(gui, gui_options.Align_HorizontalCenter)
 		GuiOptionsAddForNextWidget(gui, gui_options.NoSound)
 		GuiAnimateBegin(gui)
 		GuiAnimateAlphaFadeIn(gui, id(), 0, 0, false)
 		-- TODO: for some reason widget colour doesn't work, make it work
-		local clicked = GuiButton(gui, id(), w / 2, y, text)
-		GuiAnimateBegin(gui)
-		if clicked and v ~= "credits" and v ~= "paused" then return false, true end
-		if v == "credits" then
-			credits_y = y
-			credits_text = text
+		if v ~= "credits" and v ~= "paused" then
+			local clicked = GuiButton(gui, id(), w / 2, y, text)
+			if clicked then return false, true end
 		end
+		GuiAnimateEnd(gui)
 		y = y + txt_h
 	end
 
@@ -106,6 +108,8 @@ function M.draw_button(gui, id, rainbow, internal_frame)
 		GuiZSet(gui, -100000)
 		local text_w = GuiGetTextDimensions(gui, credits_text)
 		clicked = draw_rainbow(gui, id, internal_frame, credits_text, w / 2 - text_w / 2, credits_y)
+		if clicked then print("clicked") end
+		print(tostring(clicked))
 	else
 		GuiColorSetForNextWidget(gui, 0, 0, 0, 0)
 		GuiOptionsAddForNextWidget(gui, gui_options.Align_HorizontalCenter)
@@ -120,7 +124,11 @@ end
 function M.return_button(gui, id)
 	local w, h = GuiGetScreenDimensions(gui)
 	local x, y = w * 0.04, h * 0.93
+	GuiOptionsAddForNextWidget(gui, gui_options.NoSound)
+	GuiAnimateBegin(gui)
+	GuiAnimateAlphaFadeIn(gui, id(), 0, 0, false)
 	local clicked = GuiButton(gui, x, y, GameTextGetTranslatedOrNot("$menu_return"), id())
+	GuiAnimateEnd(gui)
 	return clicked
 end
 
