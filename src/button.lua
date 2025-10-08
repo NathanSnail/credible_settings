@@ -50,8 +50,6 @@ local function draw_rainbow(gui, id, internal_frame, msg, x, y)
 	local clicked, _, hovered = GuiGetPreviousWidgetInfo(gui)
 	hovered_last = hovered
 
-	-- TODO: find a proper solution
-	-- for some reason the first time you click it triggers multiple times
 	return clicked
 end
 
@@ -88,16 +86,16 @@ function M.draw_button(gui, id, rainbow, internal_frame)
 			credits_text = text
 		end
 		local _, txt_h = GuiGetTextDimensions(gui, text)
-		GuiOptionsAddForNextWidget(gui, gui_options.Align_HorizontalCenter)
-		GuiOptionsAddForNextWidget(gui, gui_options.NoSound)
-		GuiAnimateBegin(gui)
-		GuiAnimateAlphaFadeIn(gui, id(), 0, 0, false)
-		-- TODO: for some reason widget colour doesn't work, make it work
 		if v ~= "credits" and v ~= "paused" then
+			-- TODO: for some reason widget colour doesn't work, make it work
+			GuiOptionsAddForNextWidget(gui, gui_options.Align_HorizontalCenter)
+			GuiOptionsAddForNextWidget(gui, gui_options.NoSound)
+			GuiAnimateBegin(gui)
+			GuiAnimateAlphaFadeIn(gui, id(), 0, 0, false)
 			local clicked = GuiButton(gui, id(), w / 2, y, text)
+			GuiAnimateEnd(gui)
 			if clicked then return false, true end
 		end
-		GuiAnimateEnd(gui)
 		y = y + txt_h
 	end
 

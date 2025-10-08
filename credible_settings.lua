@@ -79,6 +79,7 @@ function M.install_hooks()
 	local _id = 2
 	local menu_open = false
 	local in_other_gui = false
+	local inventory_pause = false
 	local function id()
 		_id = _id + 1
 		return _id
@@ -86,8 +87,9 @@ function M.install_hooks()
 
 	local _OnPausePreUpdate = OnPausePreUpdate or function() end
 	OnPausePreUpdate = function()
-		if not won then return end
 		_OnPausePreUpdate()
+		if not won then return end
+		if inventory_pause then return end
 		gui = gui or GuiCreate()
 		internal_frame = internal_frame + 1
 		_id = 2
@@ -108,8 +110,9 @@ function M.install_hooks()
 	end
 	local _OnPausedChanged = OnPausedChanged or function() end
 	OnPausedChanged = function(is_paused, is_inventory_pause)
-		if not won then return end
 		_OnPausedChanged(is_paused, is_inventory_pause)
+		if not won then return end
+		inventory_pause = is_inventory_pause
 		paused = is_paused
 		-- we should make sure that we close the menu if state got desynced, otherwise things will be bad
 		if not is_paused then
