@@ -103,10 +103,7 @@ function M.install_hooks()
 		if menu_open then
 			menu_open = not button.return_button(gui, id)
 		else
-			menu_open = button.draw_button(gui, id, true, internal_frame)
-			if not menu_open and InputIsMouseButtonJustUp(keycodes.Mouse_left) then
-				in_other_gui = true
-			end
+			menu_open, in_other_gui = button.draw_button(gui, id, true, internal_frame)
 		end
 	end
 	local _OnPausedChanged = OnPausedChanged or function() end
