@@ -1,5 +1,6 @@
 ---@class credible_settings
 local M = {}
+local installed = false
 
 local path = "data/credible_settings/temp.txt"
 ModTextFileSetContent(path, "empty")
@@ -45,6 +46,8 @@ end
 
 ---Run after `OnMagicNumbersAndWorldSeedInitialized` is declared
 function M.install_hooks()
+	if installed then error("attempted to install multiple times in same context") end
+	installed = true
 	local my_counter
 	local version_key = "credible_settings.version"
 	local old_credits_key = "credible_settings.old_credits"
