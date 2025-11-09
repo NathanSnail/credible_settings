@@ -44,7 +44,7 @@ if first then
 	ModTextFileSetContent("data/translations/common.csv", translations)
 end
 
----Run after `OnMagicNumbersAndWorldSeedInitialized` is declared
+---Run after all your init callbacks are declared
 function M.install_hooks()
 	if installed then error("attempted to install multiple times in same context") end
 	installed = true
